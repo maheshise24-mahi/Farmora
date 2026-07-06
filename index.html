@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmora — Connect Farmers & Workers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f3f0fa;
+      --bg2: #ffffff;
+      --bg3: #ece8f5;
+      --text: #1a1a2e;
+      --text2: #555;
+      --accent: #7c5cbf;
+      --accent2: #9b7dd4;
+      --accent-light: #e8dff5;
+      --border: #d9d0ec;
+      --card-bg: #fff;
+      --shadow: rgba(124,92,191,0.10);
+      --danger: #d94f4f;
+      --success: #3ab06f;
+      --warn: #e6a817;
+    }
+    [data-theme="dark"] {
+      --bg: #13111a;
+      --bg2: #1c1926;
+      --bg3: #241f33;
+      --text: #e8e4f0;
+      --text2: #a099b0;
+      --accent: #9b7dd4;
+      --accent2: #b49ae0;
+      --accent-light: #2d2640;
+      --border: #3a3350;
+      --card-bg: #1c1926;
+      --shadow: rgba(0,0,0,0.3);
+      --danger: #e66;
+      --success: #4fc98a;
+      --warn: #f0c040;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background .3s, color .3s;
+      overflow-x: hidden;
+    }
+    /* NAV */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 48px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo {
+      font-size: 22px; font-weight: 800; color: var(--accent);
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
+    }
+    .logo svg { width: 30px; height: 30px; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a {
+      text-decoration: none; color: var(--text2); font-size: 14px;
+      font-weight: 500; transition: color .2s; cursor: pointer;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .btn {
+      padding: 10px 24px; border-radius: 50px; font-size: 14px;
+      font-weight: 600; cursor: pointer; border: none;
+      transition: all .2s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent; color: var(--accent);
+      border: 1.5px solid var(--accent);
+    }
+    .btn-outline:hover { background: var(--accent-light); }
+    .btn-sm { padding: 7px 16px; font-size: 13px; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { opacity: .85; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-success:hover { opacity: .85; }
+    .btn-warn { background: var(--warn); color: #fff; }
+    .theme-toggle {
+      width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--border);
+      background: var(--bg3); cursor: pointer; display: flex;
+      align-items: center; justify-content: center; font-size: 18px;
+      transition: all .2s;
+    }
+    .theme-toggle:hover { border-color: var(--accent); }
+
+    /* PAGES */
+    .page { display: none; animation: fadeIn .35s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+    /* HERO */
+    .hero {
+      text-align: center; padding: 100px 24px 60px;
+      max-width: 800px; margin: 0 auto;
+    }
+    .hero-label {
+      font-size: 14px; color: var(--text2); font-weight: 500;
+      letter-spacing: .5px; margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(40px, 7vw, 72px); font-weight: 900;
+      line-height: 1.05; margin-bottom: 28px;
+    }
+    .hero h1 .icon {
+      display: inline-flex; vertical-align: middle;
+      background: var(--accent); color: #fff; width: 70px; height: 70px;
+      border-radius: 18px; align-items: center; justify-content: center;
+      font-size: 36px; margin: 0 4px; position: relative; top: -4px;
+    }
+    @media(max-width:600px) {
+      .hero h1 .icon { width:44px; height:44px; border-radius:12px; font-size:22px; }
+    }
+    .hero p {
+      font-size: 17px; color: var(--text2); max-width: 500px;
+      margin: 0 auto 36px; line-height: 1.6;
+    }
+    .hero-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* ABOUT */
+    .about {
+      max-width: 900px; margin: 0 auto; padding: 60px 24px 80px;
+    }
+    .about h2 { font-size: 32px; font-weight: 800; margin-bottom: 18px; text-align: center; }
+    .about-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+      gap: 24px; margin-top: 36px;
+    }
+    .about-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 24px; text-align: center;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .about-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px var(--shadow); }
+    .about-card .icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: var(--accent-light); display: flex; align-items: center;
+      justify-content: center; margin: 0 auto 16px; font-size: 26px;
+    }
+    .about-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .about-card p { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+    /* AUTH FORMS */
+    .auth-container {
+      max-width: 460px; margin: 60px auto; padding: 0 24px;
+    }
+    .auth-box {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 20px; padding: 40px 32px;
+      box-shadow: 0 4px 24px var(--shadow);
+    }
+    .auth-box h2 { font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 6px; }
+    .auth-box .sub { font-size: 13px; color: var(--text2); text-align: center; margin-bottom: 28px; }
+    .role-tabs {
+      display: flex; gap: 8px; margin-bottom: 24px;
+    }
+    .role-tab {
+      flex: 1; padding: 12px; border-radius: 12px; text-align: center;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      border: 1.5px solid var(--border); background: var(--bg);
+      transition: all .2s; color: var(--text2);
+    }
+    .role-tab.active {
+      border-color: var(--accent); background: var(--accent-light); color: var(--accent);
+    }
+    .role-tab:hover { border-color: var(--accent); }
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block; font-size: 13px; font-weight: 600;
+      margin-bottom: 6px; color: var(--text);
+    }
+    .form-group input, .form-group select {
+      width: 100%; padding: 11px 14px; border-radius: 10px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      font-size: 14px; font-family: inherit; color: var(--text);
+      transition: border .2s; outline: none;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-error {
+      color: var(--danger); font-size: 12px; margin-top: 4px; display: none;
+    }
+    .form-error.show { display: block; }
+    .form-link {
+      font-size: 13px; color: var(--accent); text-decoration: none;
+      cursor: pointer; font-weight: 500;
+    }
+    .form-link:hover { text-decoration: underline; }
+    .form-footer {
+      text-align: center; margin-top: 18px; font-size: 13px; color: var(--text2);
+    }
+
+    /* SUCCESS PAGE */
+    .success-page {
+      text-align: center; padding: 80px 24px;
+    }
+    .success-page .check {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--success); color: #fff; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 36px; margin: 0 auto 24px;
+    }
+    .success-page h2 { font-size: 28px; font-weight: 800; margin-bottom: 10px; }
+    .success-page p { color: var(--text2); margin-bottom: 28px; }
+
+    /* DASHBOARD */
+    .dash { max-width: 960px; margin: 0 auto; padding: 36px 24px 80px; }
+    .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+    .dash-header h2 { font-size: 24px; font-weight: 800; }
+    .search-bar {
+      padding: 9px 16px; border-radius: 10px; border: 1.5px solid var(--border);
+      background: var(--bg); font-size: 14px; font-family: inherit;
+      color: var(--text); outline: none; width: 240px;
+      transition: border .2s;
+    }
+    .search-bar:focus { border-color: var(--accent); }
+    .worker-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .worker-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .worker-card:hover { transform: translateY(-3px); box-shadow: 0 6px 24px var(--shadow); }
+    .worker-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+    .worker-card .detail {
+      display: flex; justify-content: space-between; font-size: 13px;
+      padding: 5px 0; border-bottom: 1px solid var(--border);
+    }
+    .worker-card .detail:last-of-type { border-bottom: none; }
+    .worker-card .detail span:first-child { color: var(--text2); }
+    .worker-card .detail span:last-child { font-weight: 600; }
+    .worker-card .actions { margin-top: 14px; display: flex; gap: 8px; }
+    .badge {
+      display: inline-block; padding: 4px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+    }
+    .badge-hired { background: var(--accent-light); color: var(--accent); }
+    .badge-available { background: #d4f5e2; color: #2a8a54; }
+    [data-theme="dark"] .badge-available { background: #1a3328; color: #4fc98a; }
+    .hired-info {
+      margin-top: 10px; padding: 10px 14px; background: var(--accent-light);
+      border-radius: 10px; font-size: 12px; color: var(--accent);
+    }
+
+    /* WORKER DASH */
+    .profile-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 20px; padding: 36px; max-width: 520px;
+      margin: 0 auto; box-shadow: 0 4px 20px var(--shadow);
+    }
+    .profile-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 18px; text-align: center; }
+    .profile-detail {
+      display: flex; justify-content: space-between; padding: 10px 0;
+      border-bottom: 1px solid var(--border); font-size: 14px;
+    }
+    .profile-detail:last-of-type { border-bottom: none; }
+    .profile-detail .label { color: var(--text2); }
+    .profile-detail .value { font-weight: 600; }
+
+    .notif-section { max-width: 520px; margin: 28px auto 0; }
+    .notif-section h3 { font-size: 18px; font-weight: 700; margin-bottom: 14px; }
+    .notif-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 14px; padding: 18px; margin-bottom: 12px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 10px;
+    }
+    .notif-card .info { font-size: 14px; }
+    .notif-card .info strong { display: block; margin-bottom: 2px; }
+    .notif-card .info span { font-size: 12px; color: var(--text2); }
+    .notif-actions { display: flex; gap: 8px; }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed; top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,.45); z-index: 200;
+      display: none; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: var(--card-bg); border-radius: 20px; padding: 36px;
+      max-width: 420px; width: 100%; box-shadow: 0 12px 48px rgba(0,0,0,.2);
+      animation: fadeIn .25s ease;
+    }
+    .modal h3 { font-size: 20px; font-weight: 800; margin-bottom: 18px; }
+    .modal .close-btn {
+      float: right; background: none; border: none; font-size: 22px;
+      cursor: pointer; color: var(--text2); margin-top: -8px;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 300;
+      background: var(--accent); color: #fff; padding: 14px 24px;
+      border-radius: 12px; font-size: 14px; font-weight: 600;
+      box-shadow: 0 6px 24px var(--shadow);
+      transform: translateY(100px); opacity: 0;
+      transition: all .35s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* RESPONSIVE */
+    @media(max-width:640px) {
+      nav { padding: 14px 18px; }
+      .nav-links { display: none; }
+      .hero { padding: 60px 18px 40px; }
+      .auth-box { padding: 28px 20px; }
+      .form-row { grid-template-columns: 1fr; }
+      .dash { padding: 24px 14px 60px; }
+      .modal { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showPage('home')">
+    <svg viewBox="0 0 30 30" fill="none"><rect width="30" height="30" rx="8" fill="var(--accent)"/><text x="15" y="21" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold">🌱</text></svg>
+    farmora
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="scrollToAbout()">About Us</a>
+  </div>
+  <div class="nav-right">
+    <button type="button" class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    <button type="button" class="btn btn-outline btn-sm" onclick="showPage('login')" id="navLogin">Login</button>
+    <button type="button" class="btn btn-primary btn-sm" onclick="showPage('register')" id="navRegister">Register</button>
+    <button type="button" class="btn btn-outline btn-sm" onclick="logout()" id="navLogout" style="display:none">Logout</button>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-label">The platform that connects fields to hands</div>
+    <h1>Your <span class="icon">🌾</span> trusted farming companion</h1>
+    <p>Farmora bridges the gap between landowners and skilled agricultural workers. Hire trusted hands or find meaningful work — all in one place.</p>
+    <div class="hero-buttons">
+      <button type="button" class="btn btn-primary" onclick="showPage('register')">Get Started</button>
+      <button type="button" class="btn btn-outline" onclick="scrollToAbout()">Learn More</button>
+    </div>
+  </div>
+  <div class="about" id="aboutSection">
+    <h2>Why Farmora?</h2>
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="icon">🤝</div>
+        <h3>Direct Connections</h3>
+        <p>Landowners and workers connect directly without middlemen, ensuring fair deals and transparent hiring.</p>
+      </div>
+      <div class="about-card">
+        <div class="icon">📋</div>
+        <h3>Worker Profiles</h3>
+        <p>Workers showcase their specialties, experience, and daily rates so landowners can find the perfect match.</p>
+      </div>
+      <div class="about-card">
+        <div class="icon">📅</div>
+        <h3>Easy Scheduling</h3>
+        <p>Hire workers for specific date ranges. Track availability and manage your farm workforce effortlessly.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- REGISTER -->
+<div id="page-register" class="page">
+  <div class="auth-container">
+
+    <!-- STEP 1: Role + Credentials -->
+    <div class="auth-box" id="regStep1">
+      <h2>Create Account</h2>
+      <p class="sub">Join Farmora and get started</p>
+      <div class="role-tabs">
+        <div class="role-tab active" onclick="setRegRole('worker')" id="regRoleWorker">👷 Worker</div>
+        <div class="role-tab" onclick="setRegRole('landowner')" id="regRoleLandowner">🌿 Land Owner</div>
+      </div>
+      <div class="form-group">
+        <label>Email or Phone Number</label>
+        <input type="text" id="regEmail" placeholder="you@example.com or phone">
+        <div class="form-error" id="regEmailErr"></div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="regPass" placeholder="Create a strong password">
+        <div class="form-error" id="regPassErr"></div>
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" id="regPassConfirm" placeholder="Re-enter password">
+        <div class="form-error" id="regPassConfirmErr"></div>
+      </div>
+      <div class="form-group">
+        <label>Security: Your favourite colour?</label>
+        <input type="text" id="regSecColor" placeholder="e.g. Blue">
+      </div>
+      <div class="form-group">
+        <label>Security: Your favourite food?</label>
+        <input type="text" id="regSecFood" placeholder="e.g. Pizza">
+        <div class="form-error" id="regSecErr"></div>
+      </div>
+      <button type="button" class="btn btn-primary" style="width:100%" onclick="registerStep1()">Continue</button>
+      <div class="form-footer">Already have an account? <a class="form-link" onclick="showPage('login')">Login</a></div>
+    </div>
+
+    <!-- STEP 2: Worker details (only workers) -->
+    <div class="auth-box" id="regStep2" style="display:none">
+      <h2>Worker Profile</h2>
+      <p class="sub">Tell landowners about yourself</p>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="regName" placeholder="Your full name">
+        <div class="form-error" id="regNameErr"></div>
+      </div>
+      <div class="form-group">
+        <label>Speciality</label>
+        <select id="regSpeciality">
+          <option value="">Select your speciality</option>
+          <option>Harvesting</option>
+          <option>Ploughing</option>
+          <option>Seeding</option>
+          <option>Irrigation</option>
+          <option>Pesticide Spraying</option>
+          <option>General Farming</option>
+          <option>Livestock Care</option>
+          <option>Equipment Operation</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Working Place / Area</label>
+        <input type="text" id="regPlace" placeholder="e.g. Punjab, Haryana">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input type="text" id="regContact" placeholder="+91...">
+        </div>
+        <div class="form-group">
+          <label>Cost per Day (₹)</label>
+          <input type="number" id="regCost" placeholder="e.g. 500">
+        </div>
+      </div>
+      <div class="form-error" id="regStep2Err"></div>
+      <button type="button" class="btn btn-primary" style="width:100%" onclick="registerStep2()">Submit</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- REGISTER SUCCESS -->
+<div id="page-regSuccess" class="page">
+  <div class="success-page">
+    <div class="check">✓</div>
+    <h2 id="successTitle">Registered as Worker!</h2>
+    <p id="successSub">Your account has been created successfully.</p>
+    <button type="button" class="btn btn-primary" onclick="showPage('login')">Go to Login</button>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="page-login" class="page">
+  <div class="auth-container">
+    <div class="auth-box">
+      <h2>Welcome Back</h2>
+      <p class="sub">Login to your Farmora account</p>
+      <div class="role-tabs">
+        <div class="role-tab active" onclick="setLoginRole('worker')" id="loginRoleWorker">👷 Worker</div>
+        <div class="role-tab" onclick="setLoginRole('landowner')" id="loginRoleLandowner">🌿 Land Owner</div>
+      </div>
+      <div class="form-group">
+        <label>Email or Phone Number</label>
+        <input type="text" id="loginEmail" placeholder="you@example.com or phone">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPass" placeholder="Enter your password">
+        <div class="form-error" id="loginErr"></div>
+      </div>
+      <div style="text-align:right;margin-bottom:16px">
+        <a class="form-link" onclick="showPage('forgot')">Forgot Password?</a>
+      </div>
+      <button type="button" class="btn btn-primary" style="width:100%" onclick="login()">Login</button>
+      <div class="form-footer">Don't have an account? <a class="form-link" onclick="showPage('register')">Register</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div id="page-forgot" class="page">
+  <div class="auth-container">
+    <div class="auth-box" id="forgotStep1">
+      <h2>Reset Password</h2>
+      <p class="sub">Answer your security questions</p>
+      <div class="form-group">
+        <label>Email or Phone Number</label>
+        <input type="text" id="forgotEmail" placeholder="Enter your registered email/phone">
+        <div class="form-error" id="forgotEmailErr"></div>
+      </div>
+      <button type="button" class="btn btn-primary" style="width:100%" onclick="forgotStep1(event)">Next</button>
+
+      <div class="form-footer"><a class="form-link" onclick="showPage('login')">← Back to Login</a></div>
+    </div>
+    <div class="auth-box" id="forgotStep2" style="display:none">
+      <h2>Security Questions</h2>
+      <p class="sub">Answer correctly to reset your password</p>
+      <div class="form-group">
+        <label>What is your favourite colour?</label>
+        <input type="text" id="forgotColor" placeholder="Your answer">
+      </div>
+      <div class="form-group">
+        <label>What is your favourite food?</label>
+        <input type="text" id="forgotFood" placeholder="Your answer">
+        <div class="form-error" id="forgotSecErr"></div>
+      </div>
+      <button type="button" class="btn btn-primary" style="width:100%" onclick="forgotStep2(event)">Verify</button>
+
+    </div>
+    <div class="auth-box" id="forgotStep3" style="display:none">
+      <h2>New Password</h2>
+      <p class="sub">Set your new password</p>
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" id="forgotNewPass" placeholder="Enter new password">
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <input type="password" id="forgotNewPassConfirm" placeholder="Confirm new password">
+        <div class="form-error" id="forgotNewPassErr"></div>
+      </div>
+      <button type="button" class="btn btn-primary" style="width:100%" onclick="forgotStep3(event)">Reset Password</button>
+
+    </div>
+  </div>
+</div>
+
+<!-- LANDOWNER DASHBOARD -->
+<!-- LANDOWNER DASHBOARD -->
+<div id="page-landownerDash" class="page">
+  <div class="dash">
+
+    <div class="dash-header">
+
+      <h2>
+        👋 Welcome,
+        <span id="loName">Owner</span>
+      </h2>
+
+      <div style="display:flex;gap:10px">
+
+        <button type="button" class="btn btn-outline btn-sm"
+  onclick="toggleNotifications(event)">
+  🔔 Notifications
+  <span id="notifCount"></span>
+</button>
+
+
+      </div>
+
+    </div>
+
+    <input
+    type="text"
+    class="search-bar"
+    placeholder="Search workers..."
+    onkeyup="filterWorkers(this.value)"
+    style="margin-bottom:20px"
+    />
+
+    <div class="worker-grid" id="workerGrid"></div>
+
+    <div
+    class="notif-section"
+    id="ownerNotifSection"
+    style="display:none;margin-top:20px"
+    >
+      <h3>Notifications</h3>
+      <div id="ownerNotifs"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MY HIRES -->
+<div id="page-myHires" class="page">
+  <div class="dash">
+    <div class="dash-header">
+      <h2>📋 My Hired Workers</h2>
+      <button type="button" class="btn btn-outline btn-sm" onclick="showPage('landownerDash')">← Back</button>
+    </div>
+    <div class="worker-grid" id="myHiresGrid"></div>
+  </div>
+</div>
+
+<!-- WORKER DASHBOARD -->
+<!-- WORKER DASHBOARD -->
+<div id="page-workerDash" class="page">
+
+  <div class="dash">
+
+    <div class="dash-header">
+
+      <h2>
+        👋 Welcome,
+        <span id="wkName">Worker</span>
+      </h2>
+
+      <div style="display:flex;gap:10px">
+
+        <button type="button" class="btn btn-outline btn-sm"
+        onclick="toggleNotifications()">
+          🔔 Notifications
+          <span id="notifCount"></span>
+        </button>
+
+        <button type="button" class="btn btn-outline btn-sm"
+  onclick="editProfile(event)">
+  ✏️ Edit Profile
+</button>
+
+
+      </div>
+
+    </div>
+
+    <!-- WORKER PROFILE -->
+    <div class="profile-card" id="workerProfile"></div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="notif-section" id="workerNotifSection" style="display:none"></div>
+
+      <h3>Notifications</h3>
+
+      <div id="workerNotifs"></div>
+
+    </div>
+
+  </div>
+
+</div>
+<!-- EDIT PROFILE -->
+<div id="page-editProfile" class="page">
+  <div class="auth-container">
+    <div class="auth-box">
+      <h2>Edit Profile</h2>
+      <p class="sub">Update your information</p>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="editName">
+      </div>
+      <div class="form-group">
+        <label>Speciality</label>
+        <select id="editSpeciality">
+          <option>Harvesting</option>
+          <option>Ploughing</option>
+          <option>Seeding</option>
+          <option>Irrigation</option>
+          <option>Pesticide Spraying</option>
+          <option>General Farming</option>
+          <option>Livestock Care</option>
+          <option>Equipment Operation</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Working Place</label>
+        <input type="text" id="editPlace">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Contact Number</label>
+          <input type="text" id="editContact">
+        </div>
+        <div class="form-group">
+          <label>Cost per Day (₹)</label>
+          <input type="number" id="editCost">
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button type="button" class="btn btn-primary" style="flex:1" onclick="saveProfile(event)">Save Changes</button>
+
+        <button type="button" class="btn btn-outline" onclick="showPage('workerDash')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HIRE MODAL -->
+<div class="modal-overlay" id="hireModal">
+  <div class="modal">
+    <button type="button" class="close-btn" onclick="closeHireModal()">✕</button>
+    <h3>Hire <span id="hireWorkerName"></span></h3>
+    <div class="form-group">
+      <label>From Date</label>
+      <input type="date" id="hireFrom">
+    </div>
+    <div class="form-group">
+      <label>To Date</label>
+      <input type="date" id="hireTo">
+      <div class="form-error" id="hireDateErr"></div>
+    </div>
+    <button type="button" class="btn btn-primary" style="width:100%;margin-top:8px" onclick="confirmHire(event)">Send Hire Request</button>
+
+  </div>
+</div>
+
+<script>
+// ====================== DATA STORE ======================
+
+// ====================== THEME ======================
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('farmoraTheme', isDark ? 'light' : 'dark');
+}
+(function() {
+  const saved = localStorage.getItem('farmoraTheme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    document.getElementById('themeBtn').textContent = saved === 'dark' ? '☀️' : '🌙';
+  }
+})();
+
+// ====================== NAVIGATION ======================
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+
+  // Reset forms
+  if (page === 'register') {
+    document.getElementById('regStep1').style.display = '';
+    document.getElementById('regStep2').style.display = 'none';
+    clearRegForm();
+  }
+  if (page === 'forgot') {
+    document.getElementById('forgotStep1').style.display = '';
+    document.getElementById('forgotStep2').style.display = 'none';
+    document.getElementById('forgotStep3').style.display = 'none';
+  }
+  if (page === 'landownerDash') renderWorkerGrid();
+  if (page === 'workerDash') renderWorkerDash();
+
+  updateNav();
+  window.scrollTo(0, 0);
+}
+
+function updateNav() {
+  const loggedIn = !!currentUser;
+  document.getElementById('navLogin').style.display = loggedIn ? 'none' : '';
+  document.getElementById('navRegister').style.display = loggedIn ? 'none' : '';
+  document.getElementById('navLogout').style.display = loggedIn ? '' : 'none';
+}
+
+function scrollToAbout() {
+  showPage('home');
+  setTimeout(() => {
+    document.getElementById('aboutSection').scrollIntoView({ behavior: 'smooth' });
+  }, 100);
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function logout() {
+  currentUser = null;
+  showPage('home');
+  toast('Logged out successfully');
+}
+
+// ====================== REGISTER ======================
+function setRegRole(role) {
+  regRole = role;
+  document.getElementById('regRoleWorker').classList.toggle('active', role === 'worker');
+  document.getElementById('regRoleLandowner').classList.toggle('active', role === 'landowner');
+}
+
+function clearRegForm() {
+  ['regEmail','regPass','regPassConfirm','regSecColor','regSecFood','regName','regSpeciality','regPlace','regContact','regCost'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.querySelectorAll('.form-error').forEach(e => { e.classList.remove('show'); e.textContent = ''; });
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.classList.add('show');
+}
+function hideErr(id) {
+  const el = document.getElementById(id);
+  if (el) { el.textContent = ''; el.classList.remove('show'); }
+}
+
+const API = "http://localhost:5000";
+
+let currentUser = null;
+let regRole = 'worker';
+let loginRole = 'worker';
+let regTempData = {};
+let forgotUser = null;
+let hireTargetWorkerId = null;
+
+function setLoginRole(role) {
+
+  loginRole = role;
+
+  document.getElementById('loginRoleWorker')
+    .classList.toggle('active', role === 'worker');
+
+  document.getElementById('loginRoleLandowner')
+    .classList.toggle('active', role === 'landowner');
+}
+
+// ================= REGISTER =================
+async function registerStep1() {
+  hideErr('regEmailErr');
+  hideErr('regPassErr');
+  hideErr('regPassConfirmErr');
+  hideErr('regSecErr');
+
+  const email = document.getElementById('regEmail').value.trim();
+  const pass = document.getElementById('regPass').value;
+  const passC = document.getElementById('regPassConfirm').value;
+  const secColor = document.getElementById('regSecColor').value.trim();
+  const secFood = document.getElementById('regSecFood').value.trim();
+
+  if (!email) return showErr('regEmailErr', 'Email or phone required');
+
+  if (!pass || pass.length < 4) {
+    return showErr('regPassErr', 'Password must be at least 4 characters');
+  }
+
+  if (pass !== passC) {
+    return showErr('regPassConfirmErr', 'Passwords do not match');
+  }
+
+  if (!secColor || !secFood) {
+    return showErr('regSecErr', 'Fill security questions');
+  }
+
+  regTempData = {
+    email,
+    password: pass,
+    role: regRole,
+    secColor,
+    secFood
+  };
+
+  if (regRole === 'landowner') {
+
+    const res = await fetch(`${API}/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        ...regTempData,
+        name: email
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      return showErr('regEmailErr', data.message);
+    }
+
+    document.getElementById('successTitle').textContent =
+      'Registered as Land Owner!';
+
+    showPage('regSuccess');
+
+  } else {
+    document.getElementById('regStep1').style.display = 'none';
+    document.getElementById('regStep2').style.display = '';
+  }
+}
+
+async function registerStep2() {
+
+  const name = document.getElementById('regName').value.trim();
+  const speciality = document.getElementById('regSpeciality').value;
+  const place = document.getElementById('regPlace').value.trim();
+  const contact = document.getElementById('regContact').value.trim();
+  const cost = document.getElementById('regCost').value;
+
+  const res = await fetch(`${API}/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      ...regTempData,
+      name,
+      speciality,
+      place,
+      contact,
+      cost
+    })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    return alert(data.message);
+  }
+
+  document.getElementById('successTitle').textContent =
+    'Registered as Worker!';
+
+  showPage('regSuccess');
+}
+function setLoginRole(role) {
+
+  loginRole = role;
+
+  document.getElementById('loginRoleWorker')
+    .classList.toggle('active', role === 'worker');
+
+  document.getElementById('loginRoleLandowner')
+    .classList.toggle('active', role === 'landowner');
+}
+// ================= LOGIN =================
+async function login() {
+
+  hideErr('loginErr');
+
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPass').value;
+
+  const res = await fetch(`${API}/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      role: loginRole
+    })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    return showErr('loginErr', data.message);
+  }
+
+  currentUser = data;
+
+ if (data.role === 'landowner') {
+
+  renderWorkerGrid();
+
+  showPage('landownerDash');
+
+} else {
+
+  document.getElementById('wkName').textContent =
+    data.name;
+
+  renderWorkerProfile();
+
+  renderWorkerDash();
+
+  showPage('workerDash');
+}
+
+  toast('Login successful');
+}
+
+// ================= FORGOT PASSWORD =================
+async function forgotStep1() {
+  if (event) event.preventDefault();
+  hideErr('forgotEmailErr');
+
+  const email = document.getElementById('forgotEmail').value.trim();
+
+  forgotUser = email;
+
+  document.getElementById('forgotStep1').style.display = 'none';
+  document.getElementById('forgotStep2').style.display = '';
+}
+
+async function forgotStep2() {
+  if (event) event.preventDefault();
+  hideErr('forgotSecErr');
+
+  const color = document.getElementById('forgotColor').value.trim();
+  const food = document.getElementById('forgotFood').value.trim();
+
+  const res = await fetch(`${API}/verify-security`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: forgotUser,
+      secColor: color,
+      secFood: food
+    })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    return showErr('forgotSecErr', data.message);
+  }
+
+  document.getElementById('forgotStep2').style.display = 'none';
+  document.getElementById('forgotStep3').style.display = '';
+}
+
+async function forgotStep3() {
+  if (event) event.preventDefault();
+  const color = document.getElementById('forgotColor').value.trim();
+  const food = document.getElementById('forgotFood').value.trim();
+
+  const pass = document.getElementById('forgotNewPass').value;
+
+  const res = await fetch(`${API}/forgot-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: forgotUser,
+      secColor: color,
+      secFood: food,
+      newPassword: pass
+    })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    return showErr('forgotNewPassErr', data.message);
+  }
+
+  toast('Password reset successful');
+
+  showPage('login');
+}
+
+// ================= LOAD WORKERS =================
+// ================= LOAD WORKERS =================
+async function renderWorkerGrid(filter = '') {
+
+  const grid = document.getElementById('workerGrid');
+
+  const res = await fetch(`${API}/workers`);
+
+  const workers = await res.json();
+
+  // get all hire requests
+  const hireRes = await fetch(`${API}/all-hires`);
+  const hires = await hireRes.json();
+
+  const filtered = workers.filter(w =>
+    (w.name + w.speciality + w.place)
+      .toLowerCase()
+      .includes(filter.toLowerCase())
+  );
+
+  grid.innerHTML = filtered.map(w => {
+
+    // check if worker already hired
+    const acceptedHire = hires.find(h =>
+      h.workerId === w.id &&
+      h.status === 'accepted'
+    );
+
+    return `
+      <div class="worker-card">
+
+        <h3>${w.name}</h3>
+
+        ${
+          acceptedHire
+          ? `<span class="badge badge-hired">Hired</span>`
+          : `<span class="badge badge-available">Available</span>`
+        }
+
+        <div class="detail">
+          <span>Speciality</span>
+          <span>${w.speciality}</span>
+        </div>
+
+        <div class="detail">
+          <span>Area</span>
+          <span>${w.place}</span>
+        </div>
+
+        <div class="detail">
+          <span>Contact</span>
+          <span>${w.contact}</span>
+        </div>
+
+        <div class="detail">
+          <span>Rate/Day</span>
+          <span>₹${w.cost}</span>
+        </div>
+
+        ${
+          acceptedHire
+          ? `
+            <div class="hired-info">
+              Already hired from
+              ${acceptedHire.from}
+              to
+              ${acceptedHire.to}
+            </div>
+          `
+          : `
+            <div class="actions">
+              <button
+  class="btn btn-sm btn-primary"
+  onclick="openHireModal(event, '${w.id}')">
+  Hire
+</button>
+
+            </div>
+          `
+        }
+
+      </div>
+    `;
+  }).join('');
+}
+function filterWorkers(value) {
+  renderWorkerGrid(value);
+}
+// ================= HIRE =================
+async function confirmHire(event) {
+  if (event) event.preventDefault();
+
+  const from = document.getElementById('hireFrom').value;
+  const to = document.getElementById('hireTo').value;
+
+  const res = await fetch(`${API}/hire`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      landownerId: currentUser.id,
+      workerId: hireTargetWorkerId,
+      from,
+      to
+    })
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    return alert(data.message);
+  }
+
+  closeHireModal();
+  toast('Hire request sent');
+  renderWorkerGrid();
+}
+
+// ================= WORKER NOTIFICATIONS =================
+function renderWorkerProfile() {
+
+  document.getElementById('workerProfile').innerHTML = `
+
+    <h3>${currentUser.name}</h3>
+
+    <div class="profile-detail">
+      <span class="label">Speciality</span>
+      <span class="value">${currentUser.speciality}</span>
+    </div>
+
+    <div class="profile-detail">
+      <span class="label">Working Area</span>
+      <span class="value">${currentUser.place}</span>
+    </div>
+
+    <div class="profile-detail">
+      <span class="label">Contact</span>
+      <span class="value">${currentUser.contact}</span>
+    </div>
+
+    <div class="profile-detail">
+      <span class="label">Rate Per Day</span>
+      <span class="value">₹${currentUser.cost}</span>
+    </div>
+
+  `;
+}
+async function respondHire(event, id, status) {
+  if (event) event.preventDefault();
+
+  const res = await fetch(
+    `${API}/hire-response/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ status })
+    }
+  );
+
+  const data = await res.json();
+
+  toast(data.message);
+
+  renderWorkerDash();
+
+  renderWorkerGrid();
+}
+
+// ================= WORKER DASHBOARD =================
+async function renderWorkerDash() {
+
+  renderWorkerProfile();
+
+  const res = await fetch(
+    `${API}/hire-requests/${currentUser.id}`
+  );
+
+  const requests = await res.json();
+
+  let html = '';
+
+  let pendingCount = 0;
+
+  requests.forEach(h => {
+
+    if (h.status === 'pending') {
+      pendingCount++;
+    }
+
+    html += `
+      <div class="notif-card">
+
+        <div class="info">
+          <strong>${h.status.toUpperCase()}</strong>
+
+          <span>
+            ${h.from} → ${h.to}
+          </span>
+        </div>
+
+        ${
+          h.status === 'pending'
+          ? `
+            <div class="notif-actions">
+
+              <button
+  class="btn btn-success btn-sm"
+  onclick="respondHire(event, '${h.id}','accepted')">
+  Accept
+</button>
+
+<button
+  class="btn btn-danger btn-sm"
+  onclick="respondHire(event, '${h.id}','declined')">
+  Decline
+</button>
+
+
+            </div>
+          `
+          : ''
+        }
+
+      </div>
+    `;
+  });
+
+  document.getElementById('workerNotifs').innerHTML = html;
+
+  document.getElementById('notifCount').textContent =
+    pendingCount > 0 ? `(${pendingCount})` : '';
+}
+// ================= OWNER NOTIFICATIONS =================
+async function renderOwnerNotifications() {
+
+  const res = await fetch(
+    `${API}/owner-hires/${currentUser.id}`
+  );
+
+  const requests = await res.json();
+
+  let html = '';
+
+  let count = 0;
+
+  requests.forEach(h => {
+
+    if (h.status === 'accepted') {
+      count++;
+    }
+
+    html += `
+      <div class="notif-card">
+
+        <div class="info">
+
+          <strong>${h.workerName}</strong>
+
+          <span>
+            Status:
+            ${h.status}
+          </span>
+
+          <br>
+
+          <span>
+            ${h.from} → ${h.to}
+          </span>
+
+        </div>
+
+      </div>
+    `;
+  });
+
+  document.getElementById('ownerNotifs').innerHTML = html;
+
+  document.getElementById('ownerNotifCount').textContent =
+    count > 0 ? `(${count})` : '';
+}
+// ================= RESPOND HIRE =================
+
+function toggleNotifications(event) {
+
+  if(event) event.preventDefault();
+
+  // WORKER NOTIFICATIONS
+  const workerSec =
+    document.getElementById('workerNotifSection');
+
+  // OWNER NOTIFICATIONS
+  const ownerSec =
+    document.getElementById('ownerNotifSection');
+
+  // WORKER DASH
+  if (
+    workerSec &&
+    document
+      .getElementById('page-workerDash')
+      .classList.contains('active')
+  ) {
+
+    if (
+      workerSec.style.display === 'none' ||
+      workerSec.style.display === ''
+    ) {
+
+      workerSec.style.display = 'block';
+
+    } else {
+
+      workerSec.style.display = 'none';
+    }
+  }
+
+  // OWNER DASH
+  if (
+    ownerSec &&
+    document
+      .getElementById('page-landownerDash')
+      .classList.contains('active')
+  ) {
+
+    if (
+      ownerSec.style.display === 'none' ||
+      ownerSec.style.display === ''
+    ) {
+
+      ownerSec.style.display = 'block';
+
+    } else {
+
+      ownerSec.style.display = 'none';
+    }
+  }
+}
+function toggleOwnerNotifications() {
+
+  const sec =
+    document.getElementById('ownerNotifSection');
+
+  if (sec.style.display === 'none') {
+
+    sec.style.display = 'block';
+
+    renderOwnerNotifications();
+
+  } else {
+
+    sec.style.display = 'none';
+  }
+}
+function editProfile(event) {
+  if (event) event.preventDefault();
+  document.getElementById('editName').value =
+    currentUser.name || '';
+  document.getElementById('editName').value =
+    currentUser.name || '';
+
+  document.getElementById('editSpeciality').value =
+    currentUser.speciality || '';
+
+  document.getElementById('editPlace').value =
+    currentUser.place || '';
+
+  document.getElementById('editContact').value =
+    currentUser.contact || '';
+
+  document.getElementById('editCost').value =
+    currentUser.cost || '';
+
+  showPage('editProfile');
+}
+// ================= EDIT PROFILE =================
+async function saveProfile(event) {
+  if (event) event.preventDefault();
+  try {
+
+    const updatedData = {
+      name: document.getElementById('editName').value.trim(),
+      speciality: document.getElementById('editSpeciality').value,
+      place: document.getElementById('editPlace').value.trim(),
+      contact: document.getElementById('editContact').value.trim(),
+      cost: document.getElementById('editCost').value
+    };
+
+    const res = await fetch(
+      `${API}/edit-profile/${currentUser.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updatedData)
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message);
+      return;
+    }
+
+    currentUser = {
+      ...currentUser,
+      ...updatedData
+    };
+
+    document.getElementById('wkName').textContent =
+      currentUser.name;
+
+    renderWorkerProfile();
+
+    toast("Profile updated successfully");
+
+    showPage('workerDash');
+
+  } catch (err) {
+
+    console.log(err);
+
+    alert("Server error while updating profile");
+  }
+}
+function openHireModal(event, workerId) {
+  if (event) event.preventDefault();
+
+  hireTargetWorkerId = workerId;
+
+  document.getElementById('hireModal')
+    .classList.add('show');
+}
+
+
+function closeHireModal() {
+
+  document
+    .getElementById('hireModal')
+    .classList.remove('show');
+}
+
+document.querySelector('.logo').onclick = () => {
+  showPage('home');
+};
+
+// SAVE PROFILE BUTTON
+</script>
+</body>
+</html>
